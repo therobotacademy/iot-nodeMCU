@@ -3,6 +3,8 @@
 
 const char* ssid = "IO"; // Rellena con el nombre de tu red WiFi
 const char* password = "FrutaFriaFrigorizada"; // Rellena con la contraseña de tu red WiFi
+//const char* ssid = "EspacioRES"; // Rellena con el nombre de tu red WiFi
+//const char* password = "octubre2014res"; // Rellena con la contraseña de tu red WiFi
 
 const char* host = "api.wunderground.com";
 const char* apiKey = "769241281db33909"; // Puedes obtenerla en
