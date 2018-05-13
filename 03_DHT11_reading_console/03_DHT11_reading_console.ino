@@ -1,8 +1,8 @@
 #include "DHT.h"
  
 // Uncomment whatever type you're using!
-//define DHTTYPE DHT11   // DHT 11
-#define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
+#define DHTTYPE DHT11   // DHT 11
+//define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 //#define DHTTYPE DHT21   // DHT 21 (AM2301)
  
 // Connect pin 1 (on the left) of the sensor to +5V
@@ -12,13 +12,13 @@
 // Connect pin 4 (on the right) of the sensor to GROUND
 // Connect a 10K resistor from pin 2 (data) to pin 1 (power) of the sensor
  
-const int DHTPin = D2;     // what digital pin we're connected to GPIO4 (= 4)
+const int DHTPin = D1;     // what digital pin we're connected to GPIO5 (= 5)
  
 DHT dht(DHTPin, DHTTYPE);
  
 void setup() {
    Serial.begin(115200);
-//   Serial.println("DHT22 test!");
+//   Serial.println("DHT11 test!");
  
    dht.begin();
 }
