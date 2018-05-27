@@ -36,9 +36,9 @@ long start_time; // Tiempo al inicio del último intervalo
 
 /************** 70% en DEEP_SLEEP, ciclo de 150 s *****************
 // Tiempo máximo de lectura
-#define READ_TIME  8000 // + aprox. 2 segundos que se tarda en la conexión
+#define READ_TIME  43000 // + aprox. 2 segundos que se tarda en la conexión
 // Tiempo de Deep Sleep del ESP8266 (en microsegundos)
-#define SLEEP_TIME 140e6
+#define SLEEP_TIME 105e6
 */
 /**************************** CONECTIVIDAD CON LA PLATAFORMA ********************************/
 // THINGER.IO datos para conexión
@@ -121,22 +121,22 @@ void loop() {
     //thing.write_bucket("Stream_DHT11", "DHT11");  // Método alternativo
   
   // Debug específico de las lecturas (tiempo de espera) ==============================
-  Serial.print(millis()- start_time);
-  Serial.println(" milisegundos para obtener medida");
-  Serial.print("\n Suspendido (ms) hasta completar tiempo activo ...");
-  Serial.println(READ_TIME -(millis()- start_time));
- // ===================================================================================
- if (loop_iter == 2)    
+  
+  if (loop_iter == 2) {
+    Serial.print(millis()- start_time);
+    Serial.println(" milisegundos para obtener medida");
+    Serial.print("\n Suspendido (ms) hasta completar tiempo activo ...");
+    Serial.println(READ_TIME -(millis()- start_time));
+   
+    // ===================================================================================   
     while ((millis()- start_time) < READ_TIME){ 
     delay(10);
     }
-  
-  // ===================================================================================
-  if (loop_iter == 2) {
-    // Debug específico de las lecturas (tiempo de SLEEP) ===============================
-    Serial.print("\n.................NodeMCU durmiendo ..................");
-    Serial.println(SLEEP_TIME);   
-    ESP.deepSleep(SLEEP_TIME, WAKE_RF_DEFAULT);
+   // Debug específico de las lecturas (tiempo de SLEEP) ===============================
+   Serial.print("\n.................NodeMCU durmiendo ..................");
+   Serial.println(SLEEP_TIME);
+      
+   ESP.deepSleep(SLEEP_TIME, WAKE_RF_DEFAULT);
   }
   else
     loop_iter++;
