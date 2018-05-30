@@ -52,9 +52,6 @@ const char* ssid = "IO";
 const char* password = "FrutaFriaFrigorizada";
 /******************************************************************************************/
 
-byte loop_iter = 1; // En la primera iteración del loop() no escribe en Thinger.io (bug?)
-                    // Por lo que al usar DEEP_SLEEP tenemos que asegurar que el bucle se ejecuta
-                    // al menos una segunda para que los datos se envíen
 void setup() {
   Serial.begin(115200);
  // Inicialización del sensor DHT  
@@ -83,10 +80,7 @@ void loop() {
   do {
     t_NOverificada = dht.readTemperature();
     h_NOverificada = dht.readHumidity();
-    if (loop_iter == 1) {  // Los datos de la primera iteración no se envían a Thinger.io (bug)
-      t_NOverificada = 0;
-      h_NOverificada = 0;
-    }
+
     if (!isnan(t_NOverificada)) {  // Si la lectura de TEMPERATURA contiene un valor numérico
       t = t_NOverificada;  // Lectura correcta de temperatura
       lectura_t = true;
@@ -117,30 +111,25 @@ void loop() {
     n_lectura++;
   } while (isnan(t_NOverificada) || isnan(h_NOverificada));
 
-    Serial.println("... Intento de escritura ...");
-    thing.stream(thing["DHT11"]);  //Envía las lecturas válidas servidor
-    //thing.write_bucket("Stream_DHT11", "DHT11");  // Método alternativo
+  Serial.println("... Intento de escritura ...");
+  thing.write_bucket("Stream_DHT11", "DHT11"); // Data bucket configurado como Data Source:”From Write Call”
   
   // Debug específico de las lecturas (tiempo de espera) ==============================
-  
-  if (loop_iter == 2) {
-    Serial.print(millis()- start_time);
-    Serial.println(" milisegundos para obtener medida");
-    Serial.print("\n Suspendido (ms) hasta completar tiempo activo ...");
-    Serial.println(READ_TIME -(millis()- start_time));
+  Serial.print(millis()- start_time);
+  Serial.println(" milisegundos para obtener medida");
+  Serial.print("\n Suspendido (ms) hasta completar tiempo activo ...");
+  Serial.println(READ_TIME -(millis()- start_time));
    
-    // ===================================================================================   
-    while ((millis()- start_time) < READ_TIME){ 
-    delay(10);
-    }
-    // Debug específico de las lecturas (tiempo de SLEEP) ===============================
-    Serial.print("\n.................NodeMCU durmiendo ..................");
-    Serial.println(SLEEP_TIME);
-      
-    ESP.deepSleep(SLEEP_TIME*1000, WAKE_RF_DEFAULT);
+  // ===================================================================================   
+  while ((millis()- start_time) < READ_TIME){ 
+  delay(10);
   }
-  else
-    loop_iter++;
-    
+  
+  // Debug específico de las lecturas (tiempo de SLEEP) ===============================
+  Serial.print("\n.................NodeMCU durmiendo ..................");
+  Serial.println(SLEEP_TIME);
+      
+  ESP.deepSleep(SLEEP_TIME*1000, WAKE_RF_DEFAULT);
+     
   Serial.println("\n==================== Segunda lectura =========================");
 }
