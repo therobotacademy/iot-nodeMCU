@@ -32,7 +32,7 @@ long start_time; // Tiempo al inicio del último intervalo
 //************** 70% en DEEP_SLEEP, ciclo de 10 s *****************
                   
 #define READ_TIME  1000   // Tiempo máximo de lectura (+ aprox. 2 segundos que se tarda en la conexión)                         
-#define SLEEP_TIME 7000e3 // Tiempo de Deep Sleep del ESP8266 (en microsegundos)
+#define SLEEP_TIME 7000  // Tiempo de Deep Sleep del ESP8266 (multiplicaremos por 1000 para pasar el dato en microsegundos)
 
 /************** 70% en DEEP_SLEEP, ciclo de 150 s *****************
 // Tiempo máximo de lectura
@@ -117,6 +117,7 @@ void loop() {
     n_lectura++;
   } while (isnan(t_NOverificada) || isnan(h_NOverificada));
 
+    Serial.println("... Intento de escritura ...");
     thing.stream(thing["DHT11"]);  //Envía las lecturas válidas servidor
     //thing.write_bucket("Stream_DHT11", "DHT11");  // Método alternativo
   
@@ -132,14 +133,14 @@ void loop() {
     while ((millis()- start_time) < READ_TIME){ 
     delay(10);
     }
-   // Debug específico de las lecturas (tiempo de SLEEP) ===============================
-   Serial.print("\n.................NodeMCU durmiendo ..................");
-   Serial.println(SLEEP_TIME);
+    // Debug específico de las lecturas (tiempo de SLEEP) ===============================
+    Serial.print("\n.................NodeMCU durmiendo ..................");
+    Serial.println(SLEEP_TIME);
       
-   ESP.deepSleep(SLEEP_TIME, WAKE_RF_DEFAULT);
+    ESP.deepSleep(SLEEP_TIME*1000, WAKE_RF_DEFAULT);
   }
   else
     loop_iter++;
     
-  Serial.println("\n==================== SIGUIENTE INTERVALO =========================");
+  Serial.println("\n==================== Segunda lectura =========================");
 }
