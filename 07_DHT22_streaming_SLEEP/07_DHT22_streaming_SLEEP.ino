@@ -20,8 +20,8 @@
 
 /***************************** VARIABLES Y CONSTANTES *********************************/
 // Parámetros del DHT 
-#define DHTPIN D1       //Pin de conexión - GPIO5
-#define DHTTYPE DHT11
+#define DHTPIN D2       //Pin de conexión - GPIO4
+#define DHTTYPE DHT22
 DHT dht(DHTPIN, DHTTYPE);
 float h;      //Variable de humedad
 float t;      //Variable de temperatura
@@ -29,12 +29,15 @@ boolean lectura_t, lectura_h;
 int n_lectura = 1; 
 long start_time; // Tiempo al inicio del último intervalo
 
-//************** 70% en DEEP_SLEEP, ciclo de 10 s *****************
+//************** 99% en DEEP_SLEEP, ciclo de 5 min *****************
                   
+#define READ_TIME  1000   // Tiempo máximo de lectura (+ aprox. 2 segundos que se tarda en la conexión)                         
+#define SLEEP_TIME 297000  // Tiempo de Deep Sleep del ESP8266 (multiplicaremos por 1000 para pasar el dato en microsegundos)
+
+//************** 70% en DEEP_SLEEP, ciclo de 10 s *****************               
 #define READ_TIME  1000   // Tiempo máximo de lectura (+ aprox. 2 segundos que se tarda en la conexión)                         
 #define SLEEP_TIME 7000  // Tiempo de Deep Sleep del ESP8266 (multiplicaremos por 1000 para pasar el dato en microsegundos)
 
-*/
 /**************************** CONECTIVIDAD CON LA PLATAFORMA ********************************/
 // THINGER.IO datos para conexión
 #define user "brjapon"
@@ -56,9 +59,9 @@ void setup() {
   thing.add_wifi(ssid, password);
 
   // Recurso que permite la lectura de datos desde la API
-  thing["DHT11"] >> [](pson& out){
-    out["DHT11_temperature"] = t;
-    out["DHT11_Humidity"] = h;
+  thing["DHT22"] >> [](pson& out){
+    out["DHT22_temperature"] = t;
+    out["DHT22_Humidity"] = h;
     };
   }
 
@@ -107,7 +110,7 @@ void loop() {
   } while (isnan(t_NOverificada) || isnan(h_NOverificada));
 
   Serial.println("... Intento de escritura ...");
-  thing.write_bucket("Stream_DHT11", "DHT11"); // Data bucket configurado como Data Source:”From Write Call”
+  thing.write_bucket("Stream_DHT22", "DHT22"); // Data bucket configurado como Data Source:”From Write Call”
   
   // Debug específico de las lecturas (tiempo de espera) ==============================
   Serial.print(millis()- start_time);
